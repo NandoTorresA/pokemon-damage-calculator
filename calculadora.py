@@ -122,9 +122,9 @@ def damage_calculate(
     elif screen == 'aurora veil':
         damage /= 2
 
-    
+    damage = int(damage)
     ### Roll
-    min_damage = int(int(damage) * 85)/100
+    min_damage = int(damage * 85/100)
 
     ### Habilidades
     pass
@@ -132,14 +132,18 @@ def damage_calculate(
     ### Itens
     pass
 
+    defender_hp = hp_calculate(defender, def_hp)
+    max_hp_remaing = defender_hp - min_damage if defender_hp - min_damage > 0 else 0
+    min_hp_remaing = defender_hp - damage if defender_hp - damage > 0 else 0
 
-    return (int(min_damage), int(damage))
+    return (100 - int(max_hp_remaing/defender_hp * 100), 100 - int(min_hp_remaing/defender_hp * 100))
+    # return (min_damage, damage)
 
 
 def hp_calculate(pokemon: Pokemon, hp_stat: int):
     base_hp = int(pokemon.hp)
     hp = base_hp + int(hp_stat) + 75
-    return hp
+    return int(hp)
 
 
 if __name__ == '__main__':

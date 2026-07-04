@@ -187,7 +187,7 @@ def calculate():
         hp_stat=defender_hp,
     )
 
-    label_result['text'] = f'O ataque causará: {damage[0]} - {damage[1]} de dano'
+    label_result['text'] = f'O ataque causará entre {damage[0]}% - {damage[1]}% de dano'
 
 
 
