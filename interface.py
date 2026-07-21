@@ -3,11 +3,11 @@ from tkinter import ttk
 from calculadora import damage_calculate, hp_calculate
 from models.pokemons import Pokemon
 from models.moves import Move
-from planilha import pokemons_list, moves_list
+from list import pokemons_list, moves_list
 import pandas as pd
 from PIL import Image, ImageTk
-import requests
 import io
+import base64
 
 df = pd.read_csv('pokemons.csv', sep=';', index_col='nome')
 
@@ -222,11 +222,12 @@ def autocomplete(entry, options):
         entry.insert(0, nome)
 
         if entry is not entry_move:
-            pokemon_id = df.loc[entry.get(), 'id']
-            img_link = requests.get(f'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png')
-            img = Image.open(io.BytesIO(img_link.content))
-            img = img.resize((130, 130))
-            img_tk = ImageTk.PhotoImage(img)
+            pokemon_db_img = df.loc[entry.get(), 'sprite']
+            pokemon_db_img = base64.b64decode(pokemon_db_img)
+            pokemon_img = Image.open(io.BytesIO(pokemon_db_img))
+            pokemon_img = pokemon_img.resize((100, 100))
+            img_tk = ImageTk.PhotoImage(pokemon_img)
+            
             if entry is entry_attacker_name:
                 label_img_attacker['image'] = img_tk
                 label_img_attacker.image = img_tk
