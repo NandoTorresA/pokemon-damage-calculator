@@ -134,7 +134,6 @@ def damage_calculate(
     min_hp_remaing = defender_hp - damage if defender_hp - damage > 0 else 0
 
     return (100 - int(max_hp_remaing/defender_hp * 100), 100 - int(min_hp_remaing/defender_hp * 100))
-    # return (min_damage, damage)
 
 
 def hp_calculate(pokemon: Pokemon, hp_stat: int):
