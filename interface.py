@@ -3,7 +3,7 @@ from tkinter import ttk
 from calculadora import damage_calculate, hp_calculate
 from models.pokemons import Pokemon
 from models.moves import Move
-from list import pokemons_list, moves_list
+from lists import pokemons_list, moves_list
 import pandas as pd
 from PIL import Image, ImageTk
 import io
@@ -171,7 +171,7 @@ def calculate():
         move=move,
         attacker=attacker,
         defender=defender,
-        weather=weather,
+        weather=combobox_weather.get(),
         terrain=terrain,
         screen=screen,
         attacker_effect=attacker_effect,

@@ -1,34 +1,30 @@
 from models.moves import Move
 from models.pokemons import Pokemon
-import requests
+from lists import types_relations
 
 def damage_calculate(
         move: Move,
         attacker: Pokemon,
         defender: Pokemon,
+
+        def_hp: int,
+        def_def: int,
+        def_sp_def: int,
+
         weather: str,
         terrain: str,
         screen: str,
         attacker_effect: bool,
+        att_attack: int,
+        att_sp_atk: int,
 
-        att_attack,
-        att_sp_atk,
-
-        def_hp,
-        def_def,
-        def_sp_def,
-        ):
+        ) -> int:
 
 
     power = move.power
     move_category = move.damage_class
     move_type = move.type
     crit = False
-    weather = None
-    terrain = None
-    attacker_effect = None
-
-    screen = None
 
     if move_category == 'physical':
         attack_points = int(attacker.attack) + int(att_attack) + 20
@@ -41,8 +37,6 @@ def damage_calculate(
     ### Cálculo base
     damage = int((22 * power * attack_points/defense_points)/50) + 2
 
-    r = requests.get(f'https://pokeapi.co/api/v2/type/{move_type}')
-    data = r.json()
 
     ### Cálculo de STAB
     if move.type in attacker.type:
@@ -50,18 +44,21 @@ def damage_calculate(
 
     for tipo in defender.type:
     ### Cálculo de super efetividade
-        for i in range(len(data['damage_relations']['double_damage_to'])):
-            if tipo in data['damage_relations']['double_damage_to'][i]['name']:
+        for supereff_type in types_relations[move_type]['double_damage_to']:
+            if tipo in supereff_type:
                 damage *= 2
+                print('superef')
 
     ### Cálculo de resistência
-        for j in range(len(data['damage_relations']['half_damage_to'])):
-            if tipo in data['damage_relations']['half_damage_to'][j]['name']:
+        for resist_type in types_relations[move_type]['half_damage_to']:
+            if resist_type in tipo:
                 damage /= 2
+                print('Resiste')
 
     ### Cálculo de imunidade
-        if tipo in data['damage_relations']['no_damage_to']:
-            damage *= 0
+        for imunity_type in types_relations[move_type]['no_damage_to']:
+            if tipo in imunity_type:
+                damage *= 0
 
     ### Crítico
     if crit:
@@ -150,5 +147,6 @@ if __name__ == '__main__':
     poke1 = Pokemon('greninja')
     poke2 = Pokemon('charizard')
     move1 = Move('flamethrower')
-    dano = damage_calculate(move1, poke2, poke1)
-    vida = hp_calculate(poke1)
+    dano = damage_calculate(move1, poke2, poke1, 100, 50, 50)
+    vida = hp_calculate(poke1, 100)
+    print(dano)
